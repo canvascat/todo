@@ -1,0 +1,154 @@
+@import './mixins.scss';
+
+/* Tasks
+  ============================================ */
+.tasks {
+  background-color: white;
+  margin-left: 266px;
+  min-height: calc(100vh);
+  vertical-align: top;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-top: 64px;
+  padding-bottom: 24px;
+  position: relative;
+
+  @include mq('900px') {
+    margin-left: 0;
+    width: auto;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin: 0 30px 20px 0;
+  }
+
+  summary {
+    @include no-select;
+    @include btn(60px);
+    padding-left: 8px;
+    display: list-item;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+  details {
+    padding-bottom: 10px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 16px;
+  }
+
+  &__list li {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    font-size: 14px;
+    color: #333;
+    position: relative;
+    margin: 4px 0;
+    input[type='checkbox'] {
+      position: absolute;
+      margin-left: 12px;
+      cursor: pointer;
+      height: 16px;
+      width: 16px;
+    }
+    input[type='text'] {
+      box-sizing: border-box;
+      background-color: #f7f7f7;
+      width: 100%;
+      height: 100%;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      padding: 0 10px 0 36px;
+    }
+  }
+}
+
+/* Add Task ============================================ */
+.add-task {
+  &__default {
+    position: absolute;
+    bottom: 60px;
+    width: calc(100% - 80px);
+  }
+  &__overlay {
+    background: rgba(102, 102, 102, 0.5);
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    transition: opacity 0.2s ease-in;
+    height: calc(100vh);
+
+    .add-task__main {
+      @include mq('900px') {
+        width: 90%;
+      }
+      width: 50vw;
+      overflow: visible;
+      border-radius: 5px;
+      background-color: white;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      padding: 12px 20px;
+      transform: translate(-50%, -50%);
+    }
+  }
+  &__header {
+    display: flex;
+    margin-bottom: 12px;
+    h2 {
+      font-size: 13px;
+      flex-grow: 1;
+    }
+    .add-task__cancel-x {
+      cursor: pointer;
+      color: gray;
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+  }
+
+  &__main {
+    position: relative;
+  }
+
+  &__project,
+  &__date {
+    cursor: pointer;
+    float: right;
+    color: gray;
+    margin: 0 10px;
+    @include transparent-button();
+  }
+
+  &__project {
+    margin-right: 0;
+  }
+
+  &__content {
+    width: 100%;
+    border: 1px solid #ddd;
+    background-color: white !important;
+    border-radius: 3px;
+    height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    &-wrap {
+      position: relative;
+    }
+  }
+  &__tools {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+}

@@ -1,0 +1,60 @@
+@import '@/styles/mixins.scss';
+
+.sidebar {
+  @include no-select();
+  width: 266px;
+  height: calc(100vh);
+  padding-top: 74px;
+  position: fixed;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  border-right: var(--generic-border);
+  background-color: #fafafa;
+
+  @include mq('900px') {
+    display: none;
+  }
+
+  &__project {
+    @include va('left');
+    cursor: pointer;
+    padding: 0 15px;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    border-left: 2px solid transparent;
+    &-name {
+      flex-grow: 1;
+    }
+    svg {
+      color: #555;
+    }
+
+    &-delete {
+      color: #cacaca;
+      font-size: 16px;
+      opacity: 0;
+      transition: opacity 300ms;
+    }
+
+    &.active,
+    &:hover {
+      background-color: white;
+    }
+    &:hover &-delete {
+      opacity: 1;
+    }
+    &.active {
+      border-left-color: var(--generic-bg);
+    }
+    span:first-of-type {
+      @include va();
+      width: 40px;
+    }
+  }
+
+  &__dot {
+    font-size: 24px;
+  }
+}
