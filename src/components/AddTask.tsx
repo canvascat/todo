@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import moment from 'moment';
-import { useSelectedProjectValue, useTasksValue } from '@/context';
+import { useCurrentProjectContext, useTasksContext } from '@/context';
 import { db, fetchTasks } from '@/utils/store';
 import { DEFAULT_PROJECT } from '@/utils/const';
-import { ITask } from '@/type';
 import { AddTaskToProject } from './AddTaskToProject';
 import { AddTaskDate } from './AddTaskDate';
+import type { ITask } from '@/type';
 
 import styles from '@/styles/task.module.scss';
 
@@ -19,11 +19,11 @@ export const AddTask: React.FC<AddTaskProps> = ({ showQuickAddTask, setShowQuick
   const [taskText, setTaskText] = useState('');
   const [taskDate, setTaskDate] = useState('');
 
-  const { selectedProject, setSelectedProject } = useSelectedProjectValue();
-  const { setTasks } = useTasksValue();
+  const [currentProject, setCurrentProject] = useCurrentProjectContext();
+  const [, setTasks] = useTasksContext();
 
   async function addTask() {
-    const projectId = selectedProject;
+    const projectId = currentProject;
     const collatedDate =
       projectId === DEFAULT_PROJECT.TODAY
         ? moment().format('DD/MM/YYYY')
@@ -36,7 +36,7 @@ export const AddTask: React.FC<AddTaskProps> = ({ showQuickAddTask, setShowQuick
       text: taskText,
       date: collatedDate || taskDate,
     } as ITask);
-    const newTasks = await fetchTasks(selectedProject);
+    const newTasks = await fetchTasks(currentProject);
     setTasks(newTasks);
     setTaskText('');
   }
@@ -94,7 +94,7 @@ export const AddTask: React.FC<AddTaskProps> = ({ showQuickAddTask, setShowQuick
             onChange={(e) => setTaskText(e.target.value)}
           />
           <div className={styles['add-task__tools']}>
-            <AddTaskToProject setProject={setSelectedProject} projectId={selectedProject} />
+            <AddTaskToProject setProject={setCurrentProject} projectId={currentProject} />
             <AddTaskDate setTaskDate={setTaskDate} />
           </div>
         </div>

@@ -1,12 +1,13 @@
 import React, { createContext, useContext } from 'react';
-import { useProjects } from '../utils/hooks';
+import { useProjects } from '@/utils/hooks';
+import type { ProviderProps } from '@/type';
 
 export const ProjectsContext: React.Context<ReturnType<typeof useProjects>> = createContext('provider' as any);
 
-export const ProjectsProvider = ({ children }: { children: React.ReactNode }) => {
-  const { projects, setProjects } = useProjects();
+export const ProjectsProvider: React.FC<ProviderProps> = (props) => {
+  const [projects, setProjects] = useProjects();
 
-  return <ProjectsContext.Provider value={{ projects, setProjects }}>{children}</ProjectsContext.Provider>;
+  return <ProjectsContext.Provider value={[projects, setProjects]}>{props.children}</ProjectsContext.Provider>;
 };
 
-export const useProjectsValue = () => useContext(ProjectsContext);
+export const useProjectsContext = () => useContext(ProjectsContext);

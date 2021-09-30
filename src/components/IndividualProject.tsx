@@ -1,8 +1,9 @@
 import React from 'react';
 import { BsTrash, BsDot } from 'react-icons/bs';
-import { useProjectsValue, useSelectedProjectValue } from '@/context';
+import { useProjectsContext, useCurrentProjectContext } from '@/context';
 import { db } from '@/utils/store';
-import { IProject, ProjectId } from '@/type';
+import { DEFAULT_PROJECT } from '@/utils/const';
+import type { IProject, ProjectId } from '@/type';
 
 import styles from '@/styles/sidebar.module.scss';
 
@@ -11,14 +12,14 @@ type IndividualProjectProp = {
 };
 
 export const IndividualProject: React.FC<IndividualProjectProp> = ({ project }) => {
-  const { projects, setProjects } = useProjectsValue();
-  const { setSelectedProject } = useSelectedProjectValue();
+  const [projects, setProjects] = useProjectsContext();
+  const [currentProject, setCurrentProject] = useCurrentProjectContext();
 
   const deleteProject = async (id?: ProjectId) => {
     if (typeof id !== 'number') return;
     await db.projects.delete(id);
     setProjects([...projects]);
-    setSelectedProject('INBOX');
+    id === currentProject && setCurrentProject(DEFAULT_PROJECT.INBOX);
   };
 
   function showDeleteProjectConfirm() {

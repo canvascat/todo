@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AiFillEdit, AiOutlineCloseCircle } from 'react-icons/ai';
 import { db, fetchTasks } from '@/utils/store';
-import { useSelectedProjectValue, useTasksValue } from '@/context';
+import { useCurrentProjectContext, useTasksContext } from '@/context';
 import styles from '@/styles/task.module.scss';
 import type { ITask } from '@/type';
 
@@ -12,14 +12,14 @@ type TaskItemProps = {
 };
 
 export const TaskItem: React.FC<TaskItemProps> = ({ id, children, checked }) => {
-  const { tasks, setTasks } = useTasksValue();
-  const { selectedProject } = useSelectedProjectValue();
+  const [tasks, setTasks] = useTasksContext();
+  const [currentProject] = useCurrentProjectContext();
 
   async function updateTask(data: Partial<Pick<ITask, 'text' | 'archived'>>) {
     const index = tasks.findIndex((t) => t.id === id);
     if (index === -1) return;
     await db.tasks.update(id, data);
-    const newTasks = await fetchTasks(selectedProject);
+    const newTasks = await fetchTasks(currentProject);
     setTasks(newTasks);
   }
 
@@ -28,7 +28,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ id, children, checked }) => 
     const index = tasks.findIndex((t) => t.id === id);
     if (index === -1) return;
     await db.tasks.delete(id);
-    const newTasks = await fetchTasks(selectedProject);
+    const newTasks = await fetchTasks(currentProject);
     setTasks(newTasks);
   }
 

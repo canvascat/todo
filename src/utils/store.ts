@@ -1,7 +1,7 @@
 import { Dexie } from 'dexie';
 import moment from 'moment';
-import { IProject, ITask, ProjectId } from '@/type';
-import { DEFAULT_PROJECT } from './const';
+import { DEFAULT_PROJECT } from '@/utils/const';
+import type { IProject, ITask, ProjectId } from '@/type';
 
 class TodoDB extends Dexie {
   tasks: Dexie.Table<ITask, number>;

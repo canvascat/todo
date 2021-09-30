@@ -1,20 +1,16 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { DEFAULT_PROJECT } from '@/utils/const';
-import type { ProjectId } from '@/type';
+import type { ProjectId, ProviderProps } from '@/type';
 
-export const SelectedProjectContext: React.Context<{
-  selectedProject: ProjectId;
-  setSelectedProject: Function;
-}> = createContext('provider' as any);
+export const CurrentProjectContext: React.Context<[ProjectId, React.Dispatch<React.SetStateAction<ProjectId>>]> =
+  createContext('provider' as any);
 
-export const SelectedProjectProvider = ({ children }: { children: React.ReactNode }) => {
-  const [selectedProject, setSelectedProject] = useState<ProjectId>(DEFAULT_PROJECT.INBOX);
-
+export const CurrentProjectProvider: React.FC<ProviderProps> = (props) => {
   return (
-    <SelectedProjectContext.Provider value={{ selectedProject, setSelectedProject }}>
-      {children}
-    </SelectedProjectContext.Provider>
+    <CurrentProjectContext.Provider value={useState<ProjectId>(DEFAULT_PROJECT.INBOX)}>
+      {props.children}
+    </CurrentProjectContext.Provider>
   );
 };
 
-export const useSelectedProjectValue = () => useContext(SelectedProjectContext);
+export const useCurrentProjectContext = () => useContext(CurrentProjectContext);

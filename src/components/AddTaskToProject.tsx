@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { AiOutlineCheck, AiOutlineUnorderedList } from 'react-icons/ai';
-import { ProjectId } from '@/type';
 import { onClickOutside } from '@/utils/hooks';
-import { useProjectsValue } from '@/context';
+import { useProjectsContext } from '@/context';
+import type { ProjectId } from '@/type';
 
 import styles from '@/styles/overlay.module.scss';
 import taskStyles from '@/styles/task.module.scss';
@@ -13,7 +13,7 @@ type ProjectOverlayProps = {
 };
 
 export const AddTaskToProject: React.FC<ProjectOverlayProps> = ({ setProject, projectId }) => {
-  const { projects } = useProjectsValue();
+  const [projects] = useProjectsContext();
   function modProject(id?: ProjectId) {
     setProject(id);
     setVisible(false);

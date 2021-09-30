@@ -1,12 +1,12 @@
 import React from 'react';
-import { useSelectedProjectValue, TasksProvider } from '@/context';
+import { useCurrentProjectContext, TasksProvider } from '@/context';
 import { Sidebar } from './Sidebar';
 import { Tasks } from '../Tasks';
 
 export const Content: React.FC = () => {
-  const { selectedProject } = useSelectedProjectValue();
+  const [currentProject] = useCurrentProjectContext();
   return (
-    <TasksProvider selectedProject={selectedProject}>
+    <TasksProvider currentProject={currentProject}>
       <section className='content'>
         <Sidebar />
         <Tasks />

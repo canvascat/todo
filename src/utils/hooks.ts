@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { IProject, ITask, ProjectId } from '@/type';
-import { db, fetchTasks } from './store';
+import { db, fetchTasks } from '@/utils/store';
+import type { IProject, ITask, ProjectId } from '@/type';
 
-export const useTasks = (selectedProject: ProjectId) => {
+export const useTasks = (currentProject: ProjectId) => {
   const [tasks, setTasks] = useState<ITask[]>([]);
 
   useEffect(() => {
-    fetchTasks(selectedProject).then(setTasks);
-  }, [selectedProject]);
+    fetchTasks(currentProject).then(setTasks);
+  }, [currentProject]);
 
-  return { tasks, setTasks };
+  return [tasks, setTasks] as const;
 };
 
 export const useProjects = () => {
@@ -25,8 +25,8 @@ export const useProjects = () => {
         }
       });
   }, [projects]);
-
-  return { projects, setProjects };
+  return [projects, setProjects] as const;
+  // return { projects, setProjects };
 };
 
 export const useDebounce = <T = any>(value: T, delay?: number) => {

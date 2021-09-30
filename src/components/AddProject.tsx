@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
-import { useProjectsValue } from '@/context';
+import { useProjectsContext } from '@/context';
 import { db } from '@/utils/store';
-import { IProject } from '@/type';
+import type { IProject } from '@/type';
 
 import styles from '@/styles/project.module.scss';
 
@@ -14,7 +14,7 @@ export const AddProject: React.FC<AddProjectProps> = ({ shouldShow = false }) =>
   const [show, setShow] = useState(shouldShow);
   const [projectName, setProjectName] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const { projects, setProjects } = useProjectsValue();
+  const [projects, setProjects] = useProjectsContext();
   useEffect(() => {
     if (show) {
       setProjectName('新建清单');

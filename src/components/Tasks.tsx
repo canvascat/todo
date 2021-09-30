@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { useSelectedProjectValue, useProjectsValue, useTasksValue } from '@/context';
+import { useCurrentProjectContext, useProjectsContext, useTasksContext } from '@/context';
 import { collatedTasks } from '@/utils/const';
 import type { ITask } from '@/type';
 import { AddTask } from './AddTask';
@@ -8,9 +8,9 @@ import { TaskItem } from './TaskItem';
 import styles from '@/styles/task.module.scss';
 
 export const Tasks: React.FC = () => {
-  const { selectedProject } = useSelectedProjectValue();
-  const { projects } = useProjectsValue();
-  const { tasks } = useTasksValue();
+  const [currentProject] = useCurrentProjectContext();
+  const [projects] = useProjectsContext();
+  const [tasks] = useTasksContext();
   const [undoneTasks, doneTasks] = useMemo(
     () => tasks.reduce<[ITask[], ITask[]]>((ts, t) => (ts[+t.archived].push(t), ts), [[], []]),
     [tasks]
@@ -18,9 +18,9 @@ export const Tasks: React.FC = () => {
 
   const projectName = useMemo(
     () =>
-      (typeof selectedProject === 'number' ? projects : collatedTasks).find((p) => p.id === selectedProject)?.name ??
+      (typeof currentProject === 'number' ? projects : collatedTasks).find((p) => p.id === currentProject)?.name ??
       '任务',
-    [selectedProject, projects]
+    [currentProject, projects]
   );
 
   useEffect(() => {

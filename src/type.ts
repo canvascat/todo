@@ -12,3 +12,7 @@ export interface ITask {
   date?: string;
   archived: boolean;
 }
+
+export type ProviderProps = {
+  children?: React.ReactNode;
+};
