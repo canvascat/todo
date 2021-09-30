@@ -1,5 +1,7 @@
 import { Dexie } from 'dexie';
-import { IProject, ITask } from '../type';
+import moment from 'moment';
+import { IProject, ITask, ProjectId } from '@/type';
+import { DEFAULT_PROJECT } from './const';
 
 class TodoDB extends Dexie {
   tasks: Dexie.Table<ITask, number>;
@@ -17,3 +19,17 @@ class TodoDB extends Dexie {
 }
 
 export const db = new TodoDB();
+
+export const fetchTasks = (projectId?: ProjectId) => {
+  const unsubscribe =
+    typeof projectId === 'number'
+      ? db.tasks.where('projectId').equals(projectId)
+      : projectId === DEFAULT_PROJECT.INBOX
+      ? db.tasks.filter((t) => t.date === '')
+      : projectId === DEFAULT_PROJECT.TODAY
+      ? db.tasks.where('date').equals(moment().format('DD/MM/YYYY'))
+      : projectId === DEFAULT_PROJECT.NEXT_7
+      ? db.tasks.filter((t) => moment(t.date, 'DD-MM-YYYY').diff(moment(), 'days') <= 7)
+      : db.tasks;
+  return unsubscribe.toArray();
+};

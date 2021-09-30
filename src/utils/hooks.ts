@@ -1,27 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import moment from 'moment';
+import React, { useState, useEffect } from 'react';
 import { IProject, ITask, ProjectId } from '@/type';
-import { db } from './store';
-import { DEFAULT_PROJECT } from './const';
+import { db, fetchTasks } from './store';
 
 export const useTasks = (selectedProject: ProjectId) => {
   const [tasks, setTasks] = useState<ITask[]>([]);
 
   useEffect(() => {
-    const unsubscribe =
-      typeof selectedProject === 'number'
-        ? db.tasks.where('projectId').equals(selectedProject)
-        : selectedProject === DEFAULT_PROJECT.INBOX
-        ? db.tasks.filter((t) => t.date === '')
-        : selectedProject === DEFAULT_PROJECT.TODAY
-        ? db.tasks.where('date').equals(moment().format('DD/MM/YYYY'))
-        : selectedProject === DEFAULT_PROJECT.NEXT_7
-        ? db.tasks.filter((t) => moment(t.date, 'DD-MM-YYYY').diff(moment(), 'days') <= 7)
-        : db.tasks;
-
-    unsubscribe.toArray().then((newTasks) => {
-      setTasks(newTasks);
-    });
+    fetchTasks(selectedProject).then(setTasks);
   }, [selectedProject]);
 
   return { tasks, setTasks };

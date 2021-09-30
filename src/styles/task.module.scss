@@ -25,7 +25,7 @@
 
   summary {
     @include no-select;
-    @include btn(60px);
+    @include btn(85px);
     padding-left: 8px;
     display: list-item;
     margin-top: 16px;
@@ -36,8 +36,7 @@
     border-top: 1px solid #f0f0f0;
     margin-top: 16px;
   }
-
-  &__list li {
+  &__item {
     display: flex;
     align-items: center;
     height: 40px;
@@ -59,7 +58,19 @@
       height: 100%;
       border: 1px solid #ddd;
       border-radius: 3px;
-      padding: 0 10px 0 36px;
+      padding: 0 66px 0 36px;
+    }
+    &__tools {
+      position: absolute;
+      right: 10px;
+      @include va();
+      button {
+        @include va();
+        @include icon-button();
+        & + button {
+          margin-left: 6px;
+        }
+      }
     }
   }
 }
@@ -120,11 +131,9 @@
 
   &__project,
   &__date {
-    cursor: pointer;
     float: right;
-    color: gray;
     margin: 0 10px;
-    @include transparent-button();
+    @include icon-button();
   }
 
   &__project {

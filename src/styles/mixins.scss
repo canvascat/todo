@@ -52,6 +52,14 @@
   background-color: transparent;
   border: 0;
 }
+@mixin icon-button() {
+  cursor: pointer;
+  color: gray;
+  @include transparent-button();
+  &:hover {
+    color: #555;
+  }
+}
 
 @mixin task-item() {
   list-style-type: none;

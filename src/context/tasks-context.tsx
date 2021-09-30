@@ -1,6 +1,6 @@
 import { ProjectId } from '@/type';
 import React, { createContext, useContext } from 'react';
-import { useTasks } from '../utils/hooks';
+import { useTasks } from '@/utils/hooks';
 
 export const TasksContext: React.Context<ReturnType<typeof useTasks>> = createContext('provider' as any);
 

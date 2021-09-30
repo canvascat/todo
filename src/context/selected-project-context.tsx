@@ -1,6 +1,6 @@
-import { ProjectId } from '@/type';
-import React, { createContext, useContext, useState } from 'react';
-import { DEFAULT_PROJECT } from '../utils/const';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { DEFAULT_PROJECT } from '@/utils/const';
+import type { ProjectId } from '@/type';
 
 export const SelectedProjectContext: React.Context<{
   selectedProject: ProjectId;

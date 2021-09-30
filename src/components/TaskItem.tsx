@@ -1,6 +1,9 @@
-import React from 'react';
-import { db } from '@/utils/store';
-import { useTasksValue } from '@/context';
+import React, { useEffect, useRef, useState } from 'react';
+import { AiFillEdit, AiOutlineCloseCircle } from 'react-icons/ai';
+import { db, fetchTasks } from '@/utils/store';
+import { useSelectedProjectValue, useTasksValue } from '@/context';
+import styles from '@/styles/task.module.scss';
+import type { ITask } from '@/type';
 
 type TaskItemProps = {
   id: number;
@@ -10,21 +13,60 @@ type TaskItemProps = {
 
 export const TaskItem: React.FC<TaskItemProps> = ({ id, children, checked }) => {
   const { tasks, setTasks } = useTasksValue();
+  const { selectedProject } = useSelectedProjectValue();
 
-  async function onCheckboxChange(archived: boolean) {
-    const index = tasks.concat().findIndex((t) => t.id === id);
-    console.log(tasks, id);
+  async function updateTask(data: Partial<Pick<ITask, 'text' | 'archived'>>) {
+    const index = tasks.findIndex((t) => t.id === id);
     if (index === -1) return;
-    await db.tasks.update(id, { archived });
-    tasks[index].archived = archived;
-    console.log(tasks);
-    setTasks([...tasks]);
+    await db.tasks.update(id, data);
+    const newTasks = await fetchTasks(selectedProject);
+    setTasks(newTasks);
+  }
+
+  async function deleteTask() {
+    if (!window.confirm('确定删除该任务？')) return;
+    const index = tasks.findIndex((t) => t.id === id);
+    if (index === -1) return;
+    await db.tasks.delete(id);
+    const newTasks = await fetchTasks(selectedProject);
+    setTasks(newTasks);
+  }
+
+  const [disabled, setDisabled] = useState(true);
+  const [text, setText] = useState(children);
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    !disabled && inputRef.current?.focus();
+  }, [disabled]);
+  function onInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (!['Escape', 'Enter'].includes(e.key)) return;
+    e.preventDefault();
+    setDisabled(true);
+    if (text === children) return;
+    if (e.key === 'Escape') setText(children);
+    else updateTask({ text });
   }
 
   return (
-    <li>
-      <input onChange={(e) => onCheckboxChange(e.target.checked)} checked={checked} type='checkbox' />
-      <input type='text' value={children} disabled={true} />
+    <li className={styles.tasks__item}>
+      <input onChange={(e) => updateTask({ archived: e.target.checked })} checked={checked} type='checkbox' />
+      <input
+        ref={inputRef}
+        title={disabled ? '' : 'Enter确定，Esc取消'}
+        type='text'
+        value={text}
+        disabled={disabled}
+        onKeyDown={(e) => onInputKeyDown(e)}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <div className={styles.tasks__item__tools}>
+        <button title={disabled ? '编辑' : '确定'} type='button' onClick={() => setDisabled(!disabled)}>
+          <AiFillEdit />
+        </button>
+        <button title='删除任务' onClick={deleteTask}>
+          <AiOutlineCloseCircle />
+        </button>
+      </div>
     </li>
   );
 };

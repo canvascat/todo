@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import moment from 'moment';
-import { useSelectedProjectValue } from '@/context';
-import { db } from '@/utils/store';
+import { useSelectedProjectValue, useTasksValue } from '@/context';
+import { db, fetchTasks } from '@/utils/store';
 import { DEFAULT_PROJECT } from '@/utils/const';
 import { ITask } from '@/type';
 import { AddTaskToProject } from './AddTaskToProject';
@@ -20,9 +20,9 @@ export const AddTask: React.FC<AddTaskProps> = ({ showQuickAddTask, setShowQuick
   const [taskDate, setTaskDate] = useState('');
 
   const { selectedProject, setSelectedProject } = useSelectedProjectValue();
+  const { setTasks } = useTasksValue();
 
-  const addTask = () => {
-    if (!taskText) return;
+  async function addTask() {
     const projectId = selectedProject;
     const collatedDate =
       projectId === DEFAULT_PROJECT.TODAY
@@ -30,18 +30,21 @@ export const AddTask: React.FC<AddTaskProps> = ({ showQuickAddTask, setShowQuick
         : projectId === DEFAULT_PROJECT.NEXT_7
         ? moment().add(7, 'days').format('DD/MM/YYYY')
         : '';
-    db.tasks.add({
+    await db.tasks.add({
       archived: false,
       projectId,
       text: taskText,
       date: collatedDate || taskDate,
     } as ITask);
+    const newTasks = await fetchTasks(selectedProject);
+    setTasks(newTasks);
     setTaskText('');
-    return true;
-  };
+  }
 
-  function submitTask() {
-    showQuickAddTask ? addTask() && setShowQuickAddTask?.(false) : addTask();
+  async function submitTask() {
+    if (!taskText) return;
+    await addTask();
+    showQuickAddTask && setShowQuickAddTask?.(false);
   }
 
   function onInputKeyUp(key: string) {
